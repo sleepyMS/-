@@ -1,14 +1,14 @@
 # coding: utf-8
 import sys, os
-sys.path.append(os.pardir)  # 부모 디렉터리의 파일을 가져올 수 있도록 설정
+sys.path.append(os.pardir)
 import numpy as np
-from common.layers import *  # Affine, Relu, SoftmaxWithLoss, BatchNormalization 등을 포함해야 함
+from common.layers import *
 from common.gradient import numerical_gradient
 from collections import OrderedDict
 
 class MulLayerNet:
     
-    def __init__(self, input_size, hidden_size, output_size, weight_init_std = 0.01, dropout_ratio=0.2):
+    def __init__(self, input_size, hidden_size, output_size, weight_init_std = 0.01, dropout_ratio=0.1):
         # 가중치 초기화
         self.params = {}
         self.layers = OrderedDict()
