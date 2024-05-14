@@ -2,24 +2,27 @@ import sys, os
 sys.path.append(os.pardir)
 import numpy as np
 from dataset.mnist import load_mnist
-from common.optimizer import AdaGrad
+from common.optimizer import AdaGrad  # Adam 최적화기를 사용
 from MulLayerNet import MulLayerNet
 import matplotlib.pyplot as plt
 
 # 데이터 읽기
 (x_train, t_train), (x_test, t_test) = load_mnist(normalize=True, one_hot_label=True)
-network = MulLayerNet(input_size=784, hidden_size=15, output_size=10, dropout_ratio=0)
+network = MulLayerNet(input_size=784, hidden_size=150, output_size=10, dropout_ratio=0)
 
 iters_num = 10000
 train_size = x_train.shape[0]
-batch_size = 1000
-learning_rate = 0.019
+batch_size = 200
+learning_rate = 0.019  # 사용자 지정 학습률
 
 train_loss_list = []
 train_acc_list = []
 test_acc_list = []
 
+
 iter_per_epoch = max(train_size / batch_size, 1)
+
+optimizer = AdaGrad(lr=learning_rate)
 
 for i in range(iters_num):
     batch_mask = np.random.choice(train_size, batch_size)
@@ -29,9 +32,8 @@ for i in range(iters_num):
     # 오차역전파법으로 기울기를 구한다.
     grad = network.gradient(x_batch, t_batch)
     
-    # 갱신
-    for key in network.params.keys():  # 모든 매개변수를 갱신
-        network.params[key] -= learning_rate * grad[key]
+    # Adam 최적화기로 매개변수 갱신
+    optimizer.update(network.params, grad)
     
     loss = network.loss(x_batch, t_batch)
     train_loss_list.append(loss)
